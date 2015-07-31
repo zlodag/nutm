@@ -4,12 +4,15 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var jwt = require('jsonwebtoken');
 
 var routes = require('./routes/index');
 var tasks = require('./routes/tasks');
+var users = require('./routes/users');
+var config = require('./config');
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/tasks', function(err) {
+mongoose.connect(config.database, function(err) {
     if(err) {
         console.log('connection error', err);
     } else {
@@ -18,6 +21,7 @@ mongoose.connect('mongodb://localhost/tasks', function(err) {
 });
 
 var app = express();
+app.set('superSecret', config.secret);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -33,6 +37,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/tasks', tasks);
+app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

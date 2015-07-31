@@ -12,6 +12,14 @@ router.get('/', function(req, res, next) {
   });
 });
 
+/* POST /tasks */
+router.post('/', function(req, res, next) {
+  Task.create(req.body, function (err, post) {
+    if (err) return next(err);
+    res.json(post);
+  });
+});
+
 /* GET /tasks/id */
 router.get('/:id', function(req, res, next) {
   Task.findById(req.params.id,function (err, task) {
@@ -28,20 +36,7 @@ router.put('/:id', function(req, res, next) {
   });
 });
 
-/* POST /tasks/reflect */
-router.post('/reflect/', function(req, res, next) {
-  res.json(req.body);
-});
-
-/* POST /tasks */
-router.post('/', function(req, res, next) {
-  Task.create(req.body, function (err, post) {
-    if (err) return next(err);
-    res.json(post);
-  });
-});
-
-/* POST /tasks/:id */
+/* POST /tasks/id */
 router.post('/:id', function(req, res, next) {
   Task.findById(req.params.id,function (err, task) {
     if (err) return next(err);
