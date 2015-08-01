@@ -1,112 +1,71 @@
 var express = require('express');
 var router = express.Router();
-var jwt = require('jsonwebtoken');
 
-var config = require('../config');
 var User = require('../models/User');
+var checkadmin = require('./checkadmin');
 
-router.post('/authenticate', function(req, res, next) {
-    User.findOne({
-        name: req.body.name,
-    }, function(err, user){
-        if (err) return next(err);
-        if (!user) {
-            // no user was found
-            res.json({success:false, message: 'Authentication failed, user not found'});
-        } else if (user) {
-            if (user.password != req.body.password) {
-                res.json({success:false, message: 'Authentication failed, incorrect password'});
-            } else {
-                var token = jwt.sign({admin:user.admin},config.secret, {
-                    subject: user.id,
-                    expiresInMinutes: 1440 //expires in 24 hours
-                });
-                res.json({
-                    success:true,
-                    message: 'Enjoy your token!',
-                    token: token
-                });
-            }
-        }
-    });
-});
-
-// route middleware to verify a token
-router.use(function(req, res, next) {
-
-  // check header or url parameters or post parameters for token
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
-
-  // decode token
-  if (token) {
-    // verifies secret and checks exp
-    jwt.verify(token, config.secret, function(err, decoded) {      
-      if (err) {
-        return next(err);
-        //return res.json({ success: false, message: 'Failed to authenticate token.' });    
-      } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;    
-        next();
-      }
-    });
-
-  } else {
-
-    // if there is no token
-    // return an error
-    return res.status(403).send({ 
-        success: false, 
-        message: 'No token provided.' 
-    });
-    
-  }
-});
+//see current user
 router.get('/me/', function(req, res, next) {
     User.findById(req.decoded.sub,function(err, user){
         if (err) return next(err);
         res.json(user);
     });
 });
-router.put('/me/', function(req, res, next) {
-    User.findByIdAndUpdate(req.decoded.sub,req.body,{new:true},function(err, newMe){
+//update username
+router.put('/me/un', function(req, res, next) {
+    if (!req.body.name) return res.json({success:false, message: 'you did not provide a username'});
+    User.findByIdAndUpdate(req.decoded.sub,{name:req.body.name},{new:true},function(err, newMe){
         if (err) return next(err);
-        res.json(newMe);
+        res.json({success:true, message: 'username updated to "' + newMe.name + '"'});
     });
 });
-router.use(function(req, res, next) {
-    if (req.decoded.admin) {
-        next();
-    } else {
-        return res.status(403).json({ 
-            success: false, 
-            message: 'You need to be admin to do that.' 
-        });
-    }
+//update password
+router.put('/me/pw', function(req, res, next) {
+    if (!req.body.password) return res.json({success:false, message: 'you did not provide a password'});
+    User.findByIdAndUpdate(req.decoded.sub,{password:req.body.password},{new:true},function(err, newMe){
+        if (err) return next(err);
+        res.json({success:true, message: 'Password updated'});
+    });
 });
+
+router.use(checkadmin);
+
+//see all users
 router.get('/', function(req, res, next) {
     User.find(function(err, users){
         res.json(users);
     });
 });
+
+//create user
+router.post('/', function(req, res, next) {
+    User.create(req.body, function(err, newUser){
+        if (err) {
+		//res.json({'message':'there was an error', 'input': req.body, 'error':err});
+		return next(err);
+	}
+        res.json(newUser);
+    });
+});
+//retrieve user
+router.get('/:id/', function(req, res, next) {
+    User.findById(req.params.id,function(err, user){
+        if (err) return next(err);
+        res.json(user);
+    });
+});
+//update user
 router.put('/:id/', function(req, res, next) {
     User.findByIdAndUpdate(req.params.id,req.body,{new:true},function(err, modifiedUser){
         if (err) return next(err);
         res.json(modifiedUser);
     });
 });
+//delete user
 router.delete('/:id/', function(req, res, next) {
     User.findByIdAndRemove(req.params.id,function(err, deletedUser){
         if (err) return next(err);
         res.json(deletedUser);
-    });
-});
-router.post('/', function(req, res, next) {
-    var user = new User(req.body);
-    user.save(function(err){
-        if (err) return next(err);
-        console.log('User saved successfully');
-        res.json({success:true, user:user});
     });
 });
 

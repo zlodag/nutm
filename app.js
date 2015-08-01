@@ -4,10 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var jwt = require('jsonwebtoken');
 
 var routes = require('./routes/index');
 var tasks = require('./routes/tasks');
+var authenticate = require('./routes/authenticate');
+var checktoken = require('./routes/checktoken');
 var users = require('./routes/users');
 var config = require('./config');
 
@@ -36,6 +37,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use(authenticate);
+app.use(checktoken);
 app.use('/tasks', tasks);
 app.use('/users', users);
 
