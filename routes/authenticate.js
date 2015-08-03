@@ -20,7 +20,7 @@ router.post('/authenticate', function(req, res, next) {
 			});
 			res.json({
 				success:true,
-				message: 'Enjoy your token!',
+				message: 'Logged in as "' + user.name + '"',
 				token: token
 			});
 		}

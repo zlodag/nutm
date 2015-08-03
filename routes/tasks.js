@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-var mongoose = require('mongoose');
 var Task = require('../models/Task.js');
 
 /* GET /tasks */

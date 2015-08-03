@@ -4,22 +4,22 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var config = require('./config');
+
+var mongoose = require('mongoose');
+mongoose.connect(config.database, function(err) {
+  if(err) {
+    console.log('connection error', err);
+  } else {
+    console.log('connection successful');
+  }
+});
 
 var routes = require('./routes/index');
 var tasks = require('./routes/tasks');
 var authenticate = require('./routes/authenticate');
 var checktoken = require('./routes/checktoken');
 var users = require('./routes/users');
-var config = require('./config');
-
-var mongoose = require('mongoose');
-mongoose.connect(config.database, function(err) {
-    if(err) {
-        console.log('connection error', err);
-    } else {
-        console.log('connection successful');
-    }
-});
 
 var app = express();
 app.set('superSecret', config.secret);

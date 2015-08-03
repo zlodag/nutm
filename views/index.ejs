@@ -1,11 +1,37 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-resource.min.js"></script>
+    <script src="scripts/nutmApp.js"></script>
+    <script src="scripts/controllers/farce.js"></script>
+    <script src="scripts/services/user.js"></script>
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+  <body ng-app="nutmApp">
+    <div class="container">
+        <div class="page-header">
+            <h3><%= title %> <small>version <%= version %></small></h3>
+        </div>
+        <div ng-controller="nutmFarce">
+            <p>Welcome to {{spud}}</p>
+            <ol>
+                <li ng-repeat="task in tasks">
+                Please can you do {{task.text}}
+                </li>
+            </ol>
+            <form ng-submit="submit()">
+                <input type="text" id="name" type="text" ng-model="auth.name" placeholder="Username" />                
+                <input type="text" id="password" type="password" ng-model="auth.password" placeholder="password" />
+                <input type="submit" value="Log in!" />
+            </form>
+            <p ng-bind="message"></p>
+            <div ng-if="token">Token: <code ng-bind="token"></code></div>
+        </div>
+    </div>
   </body>
 </html>
