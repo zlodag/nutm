@@ -25,12 +25,14 @@
                 </li>
             </ol>
             <form ng-submit="submit()">
-                <input type="text" id="name" type="text" ng-model="auth.name" placeholder="Username" />                
-                <input type="text" id="password" type="password" ng-model="auth.password" placeholder="password" />
+                <input type="text" id="name" ng-model="auth.name" placeholder="Username" />                
+                <input type="password" id="password" ng-model="auth.password" placeholder="Password" />
                 <input type="submit" value="Log in!" />
             </form>
             <p ng-bind="message"></p>
             <div ng-if="token">Token: <code ng-bind="token"></code></div>
+            <pre ng-bind="userList | json"></pre>
+            <button ng-click="showUsers()">Show Users</button>
         </div>
     </div>
   </body>

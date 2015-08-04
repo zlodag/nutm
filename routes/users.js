@@ -33,7 +33,7 @@ router.use(checkadmin);
 //see all users
 router.get('/', function(req, res, next) {
     User.find(function(err, users){
-        res.json(users);
+        res.json({success: true, users: users});
     });
 });
 
