@@ -1,22 +1,21 @@
-angular.module("nutmApp").controller("nutmFarce",function($scope,$window,nutmAuth,nutmAdmin){
+angular.module("nutmApp").controller("nutmFarce",function($scope,User){
     $scope.spud = "potato chicken!";
-    $scope.token = $window.sessionStorage.getItem("token");
-    $scope.auth = {};
-    $scope.userList = [];
+    //$scope.auth = {};
     $scope.showUsers = function(){
-        nutmAdmin.showUsers(function(response){
-            if (response.success === true) {
-                $scope.userList = response.users;
-            }
+        User.admin.showUsers(function(response){
+            $scope.userList = response.users;
+        }, function(response){
+            $scope.userList = [];
         })
     }
-    $scope.submit = function(){
-        nutmAuth.submit($scope.auth, function(response) {
-            $scope.message = response.message;
-            if (response.success === true) {
-                $scope.token = response.token;
-                $window.sessionStorage.setItem("token", response.token);
-            }
-        });
-    };
+    $scope.user = User;
+    // $scope.submit = function(){
+    //     nutmAuth.submit($scope.auth, function(response) {
+    //         $scope.message = response.message;
+    //         if (response.success === true) {
+    //             $scope.token = response.token;
+    //             $window.sessionStorage.setItem("token", response.token);
+    //         }
+    //     });
+    // };
 });

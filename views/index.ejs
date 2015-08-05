@@ -9,8 +9,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.3/angular-resource.min.js"></script>
     <script src="scripts/nutmApp.js"></script>
-    <script src="scripts/controllers/farce.js"></script>
     <script src="scripts/services/user.js"></script>
+    <script src="scripts/controllers/farce.js"></script>
   </head>
   <body ng-app="nutmApp">
     <div class="container">
@@ -24,13 +24,15 @@
                 Please can you do {{task.text}}
                 </li>
             </ol>
-            <form ng-submit="submit()">
-                <input type="text" id="name" ng-model="auth.name" placeholder="Username" />                
+            My name is: <pre ng-bind="user.user | json"></pre>
+            <button ng-click="user.logout()">Log out!</button>
+            <form ng-submit="user.login(auth)">
+                <input type="text" id="name" ng-model="auth.username" placeholder="Username" />                
                 <input type="password" id="password" ng-model="auth.password" placeholder="Password" />
                 <input type="submit" value="Log in!" />
             </form>
-            <p ng-bind="message"></p>
-            <div ng-if="token">Token: <code ng-bind="token"></code></div>
+            <!-- <p ng-bind="message"></p> -->
+            <div ng-if="token">Token: <code ng-bind="user.token"></code></div>
             <pre ng-bind="userList | json"></pre>
             <button ng-click="showUsers()">Show Users</button>
         </div>

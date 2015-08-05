@@ -7,7 +7,7 @@ var User = require('../models/User');
 
 router.post('/authenticate', function(req, res, next) {
 	User.findOne({
-		name: req.body.name,
+		name: req.body.username,
 		password: req.body.password
 	}, function(err, user){
 		if (err) return next(err);
