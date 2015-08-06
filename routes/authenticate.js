@@ -14,13 +14,15 @@ router.post('/authenticate', function(req, res, next) {
 		if (!user) {
 			res.json({success:false, message: 'Authentication failed, incorrect user/password'});
 		} else {
-			var token = jwt.sign({admin:user.admin},config.secret, {
+			var token = jwt.sign({name: user.name, admin:user.admin},config.secret, {
 				subject: user.id,
-				expiresInMinutes: 1440 //expires in 24 hours
+				// expiresInMinutes: 1440 //expires in 24 hours
+				//expiresInMinutes: 5
+				expiresInSeconds: 10
 			});
 			res.json({
 				success:true,
-				message: 'Logged in as "' + user.name + '"',
+				//message: 'Logged in as "' + user.name + '"',
 				token: token
 			});
 		}

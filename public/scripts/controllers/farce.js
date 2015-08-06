@@ -1,6 +1,4 @@
 angular.module("nutmApp").controller("nutmFarce",function($scope,User){
-    $scope.spud = "potato chicken!";
-    //$scope.auth = {};
     $scope.showUsers = function(){
         User.admin.showUsers(function(response){
             $scope.userList = response.users;

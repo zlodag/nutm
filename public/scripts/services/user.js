@@ -1,26 +1,71 @@
 angular.module("nutmApp")
-.factory("Token", function($window){
-    var token = $window.sessionStorage.getItem("token");
+.factory("Token", function($window,$timeout){
+    function decode(){
+        if (token) {
+            try {
+                decoded = JSON.parse(atob(token.split(".")[1]));
+                var exp = decoded.exp*1000;
+                var milliseconds = exp - Date.now();
+                timer = $timeout(function(){
+                    console.log('Automatically logged out');
+                    del();
+                }, milliseconds);
+                console.log('Automatic logout at %s', new Date(exp));
+            }
+            catch(err) {
+                console.log(err);
+                del();
+            }
+        } else {
+            decoded = null;
+            $timeout.cancel(timer);
+        }
+    }
+    function init(){
+        token = $window.sessionStorage.getItem("token");
+        decode();
+    }
+    function set(t){
+        del();
+        token = t;
+        $window.sessionStorage.setItem("token", token);
+        decode();
+    }
+    function del(){
+        token = null;
+        $window.sessionStorage.removeItem("token");
+        decode();
+    }
+
+    var token, decoded, timer;
+
+    init();
+
     return {
-        get: function(){
+        get token(){
             return token;
         },
-        set: function(t){
-            token = t;
-            $window.sessionStorage.setItem("token", token);
-        },
-        del: function(){
-            token = null;
-            $window.sessionStorage.removeItem("token");
-        },
-        decode: function(){
-            if (token) {return JSON.parse(atob(token.split(".")[1]));}
-            else {return null;}
+        set: set,
+        del: del,
+        get decoded(){
+            return decoded;
         }
     };
 })
 .factory("User", function($resource,Token){
-
+    // function updateTime(){
+    //     if (Token.token) {
+    //         var exp = Token.decoded.exp;
+    //         var now = Math.floor(Date.now()/1000);
+    //         if (exp <= now) {
+    //             //console.log('Time expired: logging out');
+    //             //logout();
+    //         } else {
+    //             diff = exp - now;
+    //             console.log(diff);
+    //         }
+    //     }
+    // }
     function logout() {
         Token.del();
     }
@@ -34,19 +79,22 @@ angular.module("nutmApp")
             }
         });
     }
-    nutmAuth = $resource('/authenticate',{},{
+    var nutmAuth = $resource('/authenticate',{},{
         submit: {method: 'POST'}
-    });
+    }),
     nutmAdmin = $resource('/users/:userId',{},{
-        showUsers: {method: 'GET', headers:{'X-Access-Token':function(){
-            return Token.get();
-        }}}
+        showUsers: {method: 'GET', headers:{'X-Access-Token': function(){return Token.token;}}}
     });
+    // diff;
+    // updateTime();
+    // $interval(updateTime, 1000);
 
     return {
-        get user(){return Token.decode();},
+        get loggedIn(){return !!Token.token;},
+        token: Token,
         login: login,
         logout: logout,
         admin: nutmAdmin
+        //get diff(){return diff;}
     };
 });
