@@ -9,9 +9,7 @@ var config = require('./config');
 var mongoose = require('mongoose');
 mongoose.connect(config.database, function(err) {
   if(err) {
-    console.log('connection error', err);
-  } else {
-    console.log('connection successful');
+    console.log('Unable to connect to database', err);
   }
 });
 

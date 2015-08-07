@@ -1,59 +1,78 @@
 var mongoose = require('mongoose'), Schema = mongoose.Schema;
 
-var buildingSchema = new Schema({
-    name: {type: String, required: true}
+var BuildingSchema = new Schema({
+    _id: String
 });
 
-var wardSchema = new Schema({
-    name: {type: String, required: true},
-    building: {type: Schema.Types.ObjectId, ref: 'Building', required: true},
+var WardSchema = new Schema({
+    _id: String,
+    building: {type: String, ref: 'Building', required: true}
 });
 
-var specialtySchema = new Schema({
-    name: {type: String, required: true}
+var SpecialtySchema = new Schema({
+    _id: String
 });
 
-var taskSchema = new Schema({
+function commentValidator(comment){
+    return (
+        this.type === 'add' ||
+        this.type === 'accept' ||
+        this.type === 'complete' ||
+        comment.length
+        );
+}
+
+var statusArray = ['add', 'accept','complete','cancel','comment'];
+var statusOrder = {add: 1, accept: 2, complete: 3, cancel: 3};
+
+var TaskSchema = new Schema({
     patient: {
         nhi: {type: String, required: true, match: /^[a-zA-Z]{3}[0-9]{4}$/, uppercase: true},
-        ward: {type: Schema.Types.ObjectId, ref: 'Ward', required: true},
+        ward: {type: String, ref: 'Ward', required: true},
         bed: {type: String, required: true, trim: true, uppercase: true},
-        specialty: {type: Schema.Types.ObjectId, ref: 'Specialty', required: true}
+        specialty: {type: String, ref: 'Specialty', required: true}
     },
     text: {type: String, required: true, trim: true},
     urgency: {type: Number, required: true, max: 3, min: 1},
-    added: {
+    updates: [{
         user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
         time: {type: Date, default: Date.now, required: true},
-        comment: {type: String, trim: true}
-    },
-    accepted: {
-        user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
-        time: {type: Date, default: Date.now, required: true},
-        comment: {type: String, trim: true}
-    },
-    completed: {
-        user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
-        time: {type: Date, default: Date.now, required: true},
-        comment: {type: String, trim: true}
-    },
-    cancelled: {
-        user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
-        time: {type: Date, default: Date.now, required: true},
-        comment: {type: String, required: true, trim: true}
-    },
-    comments: [{
-        user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
-        time: {type: Date, default: Date.now, required: true},
-        comment: {type: String, required: true, trim: true}
+        comment: {type: String, validate: commentValidator, trim: true},
+        type: {type: String, enum: statusArray, index: true, required: true}
     }]
 });
-// taskSchema.methods.accept = function (block, cb) {
-//   this.accepted = block;
-//   this.save(cb);
-// }
 
-module.exports = mongoose.model('Building', buildingSchema);
-module.exports = mongoose.model('Ward', wardSchema);
-module.exports = mongoose.model('Specialty', specialtySchema);
-module.exports = mongoose.model('Task', taskSchema);
+TaskSchema.methods.getStatus = function(offset) {
+    for (var i = this.updates.length - (1 + offset); i >= 0; i--) {
+        var type = this.updates[i].type;
+        if (type !== 'comment') {return type;}
+    }
+};
+
+TaskSchema.pre('save', function(next) {
+    if (this.updates.length === 0) {
+        next(new Error('Updates array is empty'));
+    } else if (this.updates.length === 1 && this.updates[0].type !== statusArray[0]) {
+        next(new Error('The first update status must be ' + statusArray[0]));
+    } else {
+        var taskStatusList = [], currentOrder, i, currentType, x, previousType;
+        for (i = 0; i < this.updates.length; i++) {
+            currentType = this.updates[i].type;
+            if (t === 'comment') {continue;}
+            currentOrder = statusOrder[currentType];
+            for (x = 0; x < taskStatusList.length; x++) {
+                previousType = taskStatusList[x];
+                if (currentOrder <= statusOrder[previousType]){
+                    return next(new Error('Cannot ' + currentType + ' after ' + previousType));
+                }
+            }
+            taskStatusList.push(currentType);
+        }
+        next();
+    }
+});
+
+mongoose.model('Building', BuildingSchema);
+mongoose.model('Ward', WardSchema);
+mongoose.model('Specialty', SpecialtySchema);
+mongoose.model('Task', TaskSchema);
