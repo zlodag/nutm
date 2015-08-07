@@ -1,4 +1,4 @@
-angular.module("nutmApp").controller("taskController",function($scope,User){
+angular.module("nutmApp").controller("authController",function($scope,User){
     $scope.showUsers = function(){
         User.admin.showUsers(function(response){
             $scope.userList = response.users;
