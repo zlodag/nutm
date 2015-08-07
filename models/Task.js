@@ -15,39 +15,43 @@ var specialtySchema = new Schema({
 
 var taskSchema = new Schema({
     patient: {
-        nhi: {type: String, required: true, match: /^[A-Z]{3}[0-9]{4}$/},
+        nhi: {type: String, required: true, match: /^[a-zA-Z]{3}[0-9]{4}$/, uppercase: true},
         ward: {type: Schema.Types.ObjectId, ref: 'Ward', required: true},
-        bed: {type: String, required: true},
+        bed: {type: String, required: true, trim: true, uppercase: true},
         specialty: {type: Schema.Types.ObjectId, ref: 'Specialty', required: true}
     },
-    text: {type: String, required: true},
-    urgency: {type: Number, required: true},
+    text: {type: String, required: true, trim: true},
+    urgency: {type: Number, required: true, max: 3, min: 1},
     added: {
         user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
         time: {type: Date, default: Date.now, required: true},
-        comment: {type: String}
+        comment: {type: String, trim: true}
     },
     accepted: {
         user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
         time: {type: Date, default: Date.now, required: true},
-        comment: {type: String}
+        comment: {type: String, trim: true}
     },
     completed: {
         user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
         time: {type: Date, default: Date.now, required: true},
-        comment: {type: String}
+        comment: {type: String, trim: true}
     },
     cancelled: {
         user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
         time: {type: Date, default: Date.now, required: true},
-        comment: {type: String, required: true}
+        comment: {type: String, required: true, trim: true}
     },
     comments: [{
         user: {type: Schema.Types.ObjectId, required: true, ref: 'User'},
         time: {type: Date, default: Date.now, required: true},
-        comment: {type: String, required: true}
+        comment: {type: String, required: true, trim: true}
     }]
 });
+// taskSchema.methods.accept = function (block, cb) {
+//   this.accepted = block;
+//   this.save(cb);
+// }
 
 module.exports = mongoose.model('Building', buildingSchema);
 module.exports = mongoose.model('Ward', wardSchema);

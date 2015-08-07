@@ -7,15 +7,15 @@ var Task = require('../models/Task.js');
 router.get('/', function(req, res, next) {
   Task.find(function (err, tasks) {
     if (err) return next(err);
-    res.json(tasks);
+    res.json({tasks: tasks});
   });
 });
 
 /* POST /tasks */
 router.post('/', function(req, res, next) {
-  Task.create(req.body, function (err, post) {
+  Task.create(req.body, function (err, newTask) {
     if (err) return next(err);
-    res.json(post);
+    res.json(newTask);
   });
 });
 
@@ -29,9 +29,9 @@ router.get('/:id', function(req, res, next) {
 
 /* PUT /tasks/id */
 router.put('/:id', function(req, res, next) {
-  Task.findByIdAndUpdate(req.params.id,req.body,{new:true},function (err, newTask) {
+  Task.findByIdAndUpdate(req.params.id,req.body,{new:true},function (err, modifiedTask) {
     if (err) return next(err);
-    res.json(newTask);
+    res.json(modifiedTask);
   });
 });
 
