@@ -7,10 +7,10 @@ angular.module("nutmApp")
                 var exp = decoded.exp*1000;
                 var milliseconds = exp - Date.now();
                 timer = $timeout(function(){
-                    console.log('Automatically logged out');
+                    console.log('Automatically logged out at %s', new Date());
                     del();
                 }, milliseconds);
-                console.log('Automatic logout at %s', new Date(exp));
+                console.log('You will be automatically logged out at %s', new Date(exp));
             }
             catch(err) {
                 console.log(err);

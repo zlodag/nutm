@@ -17,8 +17,8 @@ router.post('/authenticate', function(req, res, next) {
 			var token = jwt.sign({name: user.name, admin:user.admin},config.secret, {
 				subject: user.id,
 				// expiresInMinutes: 1440 //expires in 24 hours
-				//expiresInMinutes: 5
-				expiresInSeconds: 10
+				expiresInMinutes: 60
+				//expiresInSeconds: 10
 			});
 			res.json({
 				success:true,
