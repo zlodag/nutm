@@ -1,0 +1,4 @@
+<p>Building: {{building.name}}</p>
+<form ng-submit="newWard(newWardName)"><input type="text" ng-model="newWardName" /></form>
+<pre ng-if="outcome" ng-bind="outcome | json"></pre>
+<ui-view></ui-view>

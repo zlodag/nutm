@@ -1,0 +1,10 @@
+<a ui-sref="location">Return to building list</a>
+<ul>
+    <li ng-repeat="building in buildingList track by building._id">
+        <a ui-sref="location.building({buildingId: building._id})" ng-bind="building.name"></a>
+        <ul>
+            <li ng-repeat="ward in building.wards track by ward._id"><a ui-sref="location.building.ward({wardId: ward._id, buildingId: building._id})" ng-bind="ward.name"></a></li>
+        </ul>
+    </li>
+</ul>
+<ui-view>Click on a building for more detail...</ui-view>

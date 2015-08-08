@@ -5,13 +5,13 @@ Ward = mongoose.model('Ward'),
 Building = mongoose.model('Building');
 
 router.get('/', function(req, res, next) {
-    Ward.find(function(err, wards){
+    Ward.find().sort({name: 1}).exec(function(err, wards){
         if(err){ return next(err); }
-        res.json({wards:wards});
+        res.json(wards);
     });
 });
 router.post('/', function(req, res, next) {
-    console.log('searching for building with ID: %s', req.body.building);
+    if(!req.body.building){ return next(new Error('Incomplete request')); }
     Building.findById(req.body.building,function(err, building){
         if(err){ return next(err); }
         console.log('found building: %s', building.name);

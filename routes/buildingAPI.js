@@ -4,11 +4,11 @@ mongoose = require('mongoose'),
 Building = mongoose.model('Building');
 
 router.get('/', function(req, res, next) {
-    Building.find(function(err, buildings){
+    Building.find().sort('name').exec(function(err, buildings){
         if(err){ return next(err); }
-        var opts = [{ path: 'wards', select: 'name' }];
+        var opts = [{ path: 'wards', select: 'name', options: {sort: {name:1}} }];
         Building.populate(buildings, opts, function(err, buildings){
-            res.json({buildings:buildings});
+            res.json(buildings);
         });
     });
 });
