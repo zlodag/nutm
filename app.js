@@ -6,6 +6,8 @@ var bodyParser = require('body-parser');
 
 require('./models/Task');
 require('./models/Location');
+require('./models/Specialty');
+require('./models/User');
 
 var index = require('./routes/index');
 var api = require('./routes/api');
