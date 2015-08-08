@@ -4,13 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 
-require('./models/Task.js');
-require('./models/Location.js');
+require('./models/Task');
+require('./models/Location');
 
-var routes = require('./routes/index');
-var taskAPI = require('./routes/taskAPI.js');
-var buildingAPI = require('./routes/buildingAPI.js');
-var wardAPI = require('./routes/wardAPI.js');
+var index = require('./routes/index');
+var api = require('./routes/api');
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/taskmanager');
@@ -29,10 +27,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower',express.static(path.join(__dirname, 'bower_components')));
 
-app.use('/', routes);
-app.use('/api/tasks', taskAPI);
-app.use('/api/building', buildingAPI);
-app.use('/api/ward', wardAPI);
+app.use('/', index);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -64,6 +60,5 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
-
 
 module.exports = app;

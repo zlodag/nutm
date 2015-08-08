@@ -1,0 +1,17 @@
+<div class="page.header">
+    <h3 ng-bind="task.text"></h3><h5 ng-bind="task.time | date : 'mediumTime'"></h5>
+</div>
+<ul>
+    <li ng-repeat="comment in task.comments">
+        <span>{{comment.body}} - by {{comment.author}}</span>
+        <em>{{comment.upvotes}}</em>
+        <span class="glyphicon glyphicon-thumbs-up" ng-click="upvote(comment)"></span>
+    </li>
+</ul>
+<form ng-submit="addComment()">
+    <h3>Add a new comment</h3>
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="Comment" ng-model="body"></input>
+    </div>
+    <button type="submit" class="btn btn-primary">Post</button>
+</form>

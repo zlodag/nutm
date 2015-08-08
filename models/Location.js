@@ -8,13 +8,13 @@ var WardSchema = new Schema({
 
 var BuildingSchema = new Schema({
     name: {type: String, required: true, unique: true},
-    wards: [{type: Schema.Types.ObjectId, ref: 'Ward'}]
+    wards: [WardSchema]
 });
 
 var SpecialtySchema = new Schema({
     name: {type: String, required: true, unique: true}
 });
 
-mongoose.model('Ward', WardSchema);
+//mongoose.model('Ward', WardSchema);
 mongoose.model('Building', BuildingSchema);
 mongoose.model('Specialty', SpecialtySchema);

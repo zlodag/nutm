@@ -1,0 +1,18 @@
+<table>
+    <thead>
+        <tr>
+            <th>Text</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="task in tasks">
+            <td><a ui-sref="taskDetail({taskId:$index})" ng-bind="task.text"></a></td>
+            <td ng-bind="task.time | date : 'mediumTime'"></td>
+        </tr>
+    </tbody>
+</table>
+<form ng-submit="addTask()">
+  <input type="text" ng-model="newTask.text" placeholder="Text" required />
+  <button type="submit">Add Task!</button>
+</form>

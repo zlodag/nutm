@@ -1,0 +1,9 @@
+{
+  "ignore": [
+    "public",
+    "bower_components",
+    "node_modules",
+    ".git"
+  ],
+  "verbose": true
+}

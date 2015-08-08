@@ -7,6 +7,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: '/templates/auth.html',
             controller: 'authController'
         })
+        .state('task', {
+            url: '/tasks',
+            templateUrl: '/templates/tasks.html',
+            controller: 'taskController'
+        })
+        .state('taskDetail', {
+            url: '/tasks/:taskId',
+            templateUrl: '/templates/taskDetail.html',
+            controller: 'taskDetailController'
+        })
         .state('location', {
             url: '/location',
             templateUrl: '/templates/location.html',
@@ -25,5 +35,5 @@ app.config(function($stateProvider, $urlRouterProvider) {
             controller: 'wardController',
             controllerAs: 'wardCtrl'
         });
-    $urlRouterProvider.otherwise('location');
+    $urlRouterProvider.otherwise('tasks');
 });
