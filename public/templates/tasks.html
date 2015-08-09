@@ -1,18 +1,82 @@
 <table>
     <thead>
         <tr>
+            <th>NHI</th>
+            <th>Patient</th>
+            <th>Ward</th>
+            <th>Specialty</th>
+            <th>Urgency</th>
             <th>Text</th>
-            <th>Time</th>
+            <th>Added</th>
+            <th>Accepted</th>
+            <th>Completed</th>
+            <th>Cancelled</th>
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="task in tasks">
-            <td><a ui-sref="taskDetail({taskId:$index})" ng-bind="task.text"></a></td>
-            <td ng-bind="task.time | date : 'mediumTime'"></td>
+        <tr ng-repeat="task in tasks.tasks track by task._id">
+            <td ng-bind="task.patient.nhi"></td>
+            <td>Patient Name</td>
+            <td>
+                <a href="/ward/{{ task.patient.ward._id }}">{{task.patient.ward.name}} - {{task.patient.bed}}</a>
+                <a href="/building/{{ task.patient.ward.building }}">Building</a>
+            </td>
+            <td>
+                <a href="/specialty/{{ task.patient.specialty._id }}" ng-bind="task.patient.specialty.name"></a>
+            </td>
+            <td ng-bind="task.urgency"></td>
+            <td>
+                <a ui-sref="taskDetail({taskId:task._id})" ng-bind="task.text"></a>
+                <ul>
+                    <li ng-repeat="comment in task.comments track by comment._id">
+                        <span ng-bind="comment.comment"></span>
+                        by <a href="/user/{{ comment.user._id }}" ng-bind="comment.user.username"></a>
+                        <em>({{comment.user.name.first}} {{comment.user.name.last}})</em>
+                        at <em ng-bind="comment.time | date : 'mediumTime'"></em>
+                    </li>
+                </ul>
+            </td>
+            <td>
+                <div>
+                    Added
+                    by <a href="/user/{{ task.added.user._id }}" ng-bind="task.added.user.username"></a>
+                    <em>({{task.added.user.name.first}} {{task.added.user.name.last}})</em>
+                    at <em ng-bind="task.added.time | date : 'mediumTime'"></em>
+                    <strong ng-if="task.added.comment" ng-bind="task.added.comment"></strong>
+                </div>
+            </td>
+            <td>
+                <div ng-if="task.accepted">
+                    Accepted
+                    by <a href="/user/{{ task.accepted.user._id }}" ng-bind="task.accepted.user.username"></a>
+                    <em>({{task.accepted.user.name.first}} {{task.accepted.user.name.last}})</em>
+                    at <em ng-bind="task.accepted.time | date : 'mediumTime'"></em>
+                    <strong ng-if="task.accepted.comment" ng-bind="task.accepted.comment"></strong>
+                </div>
+            </td>
+            <td>
+                <div ng-if="task.completed">
+                    Completed
+                    by <a href="/user/{{ task.completed.user._id }}" ng-bind="task.completed.user.username"></a>
+                    <em>({{task.completed.user.name.first}} {{task.completed.user.name.last}})</em>
+                    at <em ng-bind="task.completed.time | date : 'mediumTime'"></em>
+                    <strong ng-if="task.completed.comment" ng-bind="task.completed.comment"></strong>
+                </div>
+            </td>
+            <td>
+                <div ng-if="task.cancelled">
+                    Cancelled
+                    by <a href="/user/{{ task.cancelled.user._id }}" ng-bind="task.cancelled.user.username"></a>
+                    <em>({{task.cancelled.user.name.first}} {{task.cancelled.user.name.last}})</em>
+                    at <em ng-bind="task.cancelled.time | date : 'mediumTime'"></em>
+                    <strong ng-bind="task.cancelled.comment"></strong>
+                </div>
+            </td>
         </tr>
     </tbody>
 </table>
-<form ng-submit="addTask()">
+<button type="button" ng-click="tasks.addOne()">Add on task</button>
+<form ng-submit="tasks.addOne()">
   <input type="text" ng-model="newTask.text" placeholder="Text" required />
   <button type="submit">Add Task!</button>
 </form>

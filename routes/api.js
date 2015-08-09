@@ -1,8 +1,16 @@
 var express = require('express'),
 router = express.Router(),
 taskAPI = require('./api/taskAPI.js'),
-locationAPI = require('./api/locationAPI.js'),
+
+// crud = require('./api/CRUD'),
+// buildingAPI = crud('Building'),
+// wardAPI = crud('Ward'),
+// specialtyAPI = crud('Specialty'),
+
+buildingAPI = require('./api/buildingAPI.js'),
+wardAPI = require('./api/wardAPI.js'),
 specialtyAPI = require('./api/specialtyAPI.js'),
+
 userAPI = require('./api/userAPI.js'),
 cb = require('./callback');
 
@@ -13,7 +21,8 @@ cb = require('./callback');
 // });
 
 router.use('/tasks', taskAPI);
-router.use('/location', locationAPI);
+router.use('/building', buildingAPI);
+router.use('/ward', wardAPI);
 router.use('/specialty', specialtyAPI);
 router.use('/user', userAPI);
 
@@ -22,7 +31,7 @@ router.use(function(req, res, next) {
 });
 
 router.use(function(err, req, res, next) {
-    console.log(err.stack);
+    console.log(err.message);
     res.status(err.status || 500);
     res.json({
       success: false,

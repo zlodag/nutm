@@ -10,7 +10,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
         .state('task', {
             url: '/tasks',
             templateUrl: '/templates/tasks.html',
-            controller: 'taskController'
+            controller: 'taskController',
+            resolve: {
+                postPromise: function(tasks){
+                    tasks.getAll();
+                }
+            }
         })
         .state('taskDetail', {
             url: '/tasks/:taskId',
