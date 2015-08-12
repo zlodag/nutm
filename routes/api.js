@@ -14,11 +14,12 @@ specialtyAPI = require('./api/specialtyAPI.js'),
 userAPI = require('./api/userAPI.js'),
 cb = require('./callback');
 
-// router.use(function (req, res, next) {
-//   // console.log('Accessed API: ', Date.now());
-//   if(req.body) {console.log('Request body: ', req.body);}
-//   next();
-// });
+router.use(function (req, res, next) {
+  // console.log('Accessed API: ', Date.now());
+  //if(req.body) {console.log('Request body: ', req.body);}
+  req.user = {_id: "55c65b8d89ec4dc92e0619e1"};
+  next();
+});
 
 router.use('/tasks', taskAPI);
 router.use('/building', buildingAPI);

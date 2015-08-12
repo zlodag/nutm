@@ -7,6 +7,7 @@
     <script src="/bower/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="/scripts/nutmApp.js"></script>
     <script src="/scripts/controllers/authController.js"></script>
+    <script src="/scripts/controllers/userController.js"></script>
     <script src="/scripts/controllers/taskController.js"></script>
     <script src="/scripts/controllers/locationControllers.js"></script>
     <script src="/scripts/services/tokenFactory.js"></script>
@@ -20,7 +21,15 @@
         <div class="page-header">
             <h3><%= title %> <small>version <%= version %></small></h3>
         </div>
-        <ui-view></ui-view>
+        <div class="row">
+            <div class="list-group col-sm-3">
+                <a ui-sref="auth" class="list-group-item">Auth</a>
+                <a ui-sref="task" class="list-group-item">Tasks</a>
+                <a ui-sref="location" class="list-group-item">Location</a>
+                <a ui-sref="user" class="list-group-item">Users</a>
+            </div>
+            <ui-view class="col-sm-9"></ui-view>
+        </div>
     </div>
   </body>
 </html>

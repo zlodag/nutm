@@ -6,7 +6,7 @@ Item = mongoose.model(arg),
 cb = require('../callback');
 
 router.get('/', function(req, res, next) {
-    Item.find().lean().sort('name').exec(function(err, items){
+    Item.find(req.query).lean().sort('name').exec(function(err, items){
         if(err){ return next(err); }
         res.json(items);
     });

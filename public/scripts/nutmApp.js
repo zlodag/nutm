@@ -22,6 +22,16 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: '/templates/taskDetail.html',
             controller: 'taskDetailController'
         })
+        .state('user', {
+            url: '/user/:userId',
+            templateUrl: '/templates/user.html',
+            controller: 'userController',
+            // resolve: {
+            //     postPromise: function(tasks){
+            //         tasks.getAll();
+            //     }
+            // }
+        })
         .state('location', {
             url: '/location',
             templateUrl: '/templates/location.html',
@@ -34,11 +44,10 @@ app.config(function($stateProvider, $urlRouterProvider) {
             controller: 'buildingController',
             controllerAs: 'buildingCtrl'
         })
-        .state('location.building.ward', {
-            url: '/:wardId',
+        .state('ward', {
+            url: '/ward/:wardId',
             templateUrl: '/templates/ward.html',
-            controller: 'wardController',
-            controllerAs: 'wardCtrl'
+            controller: 'wardController'
         });
     $urlRouterProvider.otherwise('tasks');
 });

@@ -7,8 +7,8 @@ angular.module("nutmApp")
         getAll : function(){
             this.tasks = t.query();
         },
-        addOne : function(){
-            this.tasks.push(t.save());
+        addOne : function(task){
+            this.tasks.push(t.save(task));
         }
     };
     return o;

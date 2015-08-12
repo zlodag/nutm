@@ -1,4 +1,7 @@
 <p>Building: {{building.name}}</p>
 <form ng-submit="newWard(newWardName)"><input type="text" ng-model="newWardName" /></form>
 <pre ng-if="outcome" ng-bind="outcome | json"></pre>
+<ul>
+	<li ng-repeat="ward in wards track by ward._id"><a ui-sref="ward({wardId:ward._id})" ng-bind="ward.name"></a></li>
+</ul>
 <ui-view></ui-view>
