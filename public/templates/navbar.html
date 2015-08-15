@@ -1,0 +1,37 @@
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <ul class="nav navbar-nav">
+            <li><a ui-sref="login" class="navbar-brand">Task Manager</a></li>
+        </ul>
+        <div ng-if="user.loggedIn">
+            <ul class="nav navbar-nav">
+                <li><a ui-sref="task">Tasks</a></li>
+                <li><a ui-sref="location">Location</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li dropdown keyboard-nav>
+                    <a href dropdown-toggle>
+                        <span class="glyphicon glyphicon-user"></span>
+                        <span ng-bind="user.token.name"></span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a ui-sref="user({userId:user.token.sub})">
+                            <span class="glyphicon glyphicon-cog"></span>
+                            User Profile
+                        </a></li>
+                        <li ng-if="user.token.admin"><a href>
+                            <span class="glyphicon glyphicon-wrench"></span>
+                            Administrate!
+                        </a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href class="navbar-link" ng-click="logout()">
+                            <span class="glyphicon glyphicon-log-out"></span>
+                            Log out
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

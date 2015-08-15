@@ -1,5 +1,6 @@
 var express = require('express'),
 router = express.Router(),
+_ = require('lodash'),
 mongoose = require('mongoose'),
 User = mongoose.model('User'),
 cb = require('../callback');
@@ -25,6 +26,13 @@ router.post('/', function(req, res, next) {
     });
 });
 router.param('userId', function(req, res, next, userId) {
+    if (userId !== req.user.sub) {
+        console.log('You\'d better be an administrator...');
+        if (req.user.admin !== true) {
+            return next(cb("You were trying to access a different user profile without being an admin!",401));
+        }
+        console.log('It seems you were an administrator...');
+    }
     User.findById(userId, function (err, user){
         if (err) { return next(err); }
         else if (user === null) { return next(cb("User not found",404));}
@@ -33,7 +41,7 @@ router.param('userId', function(req, res, next, userId) {
     });
 });
 router.get('/:userId', function(req, res, next) {
-    res.json(req.person);
+    res.json(_.pick(req.person,'fullname','site','admin','created','id'));
 });
 router.put('/:userId', function(req, res, next) {
     //req.person.update()
@@ -41,6 +49,7 @@ router.put('/:userId', function(req, res, next) {
     if(req.body.username) {req.person.username = req.body.username;}
     if(req.body.password) {req.person.password = req.body.password;}
     if(typeof req.body.admin === 'boolean') {req.person.admin = req.body.admin;}
+    if(req.body.name) {req.person.name = req.body.name;}
     req.person.save(function(err, user){
         if(err){ return next(err); }
         res.status(204).end();

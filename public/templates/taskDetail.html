@@ -3,9 +3,10 @@
 </div>
 <blockquote ng-repeat="comment in task.comments">
     <p ng-bind="comment.comment"></p>
-    <footer>by {{comment.user}} at {{comment.time | date : 'mediumTime'}}</footer>
+    <footer>by <a ui-sref="user({userId: comment.user._id})" ng-bind="{{comment.user.name.first}} {{comment.user.name.last}}"></a>
+                            at <em ng-bind="comment.time | date : 'mediumTime'"></em></footer>
 </blockquote>
-<form ng-submit="addComment()">
+<form ng-submit="addComment(newComment)">
     <h3>Add a new comment</h3>
     <div class="form-group">
         <input type="text" class="form-control" placeholder="Comment" ng-model="newComment"></input>

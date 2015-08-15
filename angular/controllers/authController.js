@@ -1,19 +1,11 @@
-angular.module("nutmApp").controller("authController",function($scope,User){
-    $scope.showUsers = function(){
-        User.admin.showUsers(function(users){
-            $scope.userList = users;
-        }, function(response){
-            $scope.userList = [];
-        })
-    }
+angular.module("nutmApp")
+.controller("authController",function(User,$scope,api,$state){
     $scope.user = User;
-    // $scope.submit = function(){
-    //     nutmAuth.submit($scope.auth, function(response) {
-    //         $scope.message = response.message;
-    //         if (response.success === true) {
-    //             $scope.token = response.token;
-    //             $window.sessionStorage.setItem("token", response.token);
-    //         }
-    //     });
-    // };
+    $scope.showUsers = function(){
+        $scope.userList = api.user.query();
+    };
+    $scope.logout = function(){
+        User.logout();
+        $state.go('login');
+    }
 });

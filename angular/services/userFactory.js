@@ -1,5 +1,5 @@
 angular.module("nutmApp")
-.factory("User", function($resource,Token){
+.factory("User", function($http,Token){
     // function updateTime(){
     //     if (Token.token) {
     //         var exp = Token.decoded.exp;
@@ -17,39 +17,28 @@ angular.module("nutmApp")
         Token.del();
     }
     function login(auth){
-        nutmAuth.submit(auth, function(response) {
+        $http.post('/authenticate', auth)
+        .then(function(response) {
             //$scope.message = response.message;
             console.log('That worked!');
-            Token.set(response.token);
+            Token.set(response.data);
         }, function(response){
             console.log('Well - that failed...');
             logout();
         });
     }
-    var nutmAuth = $resource('/api/auth',{},{
-        submit: {method: 'POST'}
-    }),
-    nutmAdmin = $resource('/api/user/:userId',{},{
-        showUsers: {
-            method: 'GET',
-            headers:{
-                'Authorization': function(){
-                    if (Token.token) return 'JWT ' + Token.token;
-                }
-            },
-            isArray: true
-        }
-    });
+    // var nutmAdmin = $resource('/api/user/:userId');
     // diff;
     // updateTime();
     // $interval(updateTime, 1000);
+    // var detail;
 
     return {
-        get loggedIn(){return !!Token.token;},
-        token: Token,
+        get loggedIn(){return Token.exists();},
+        get token(){return Token.decoded()},
         login: login,
-        logout: logout,
-        admin: nutmAdmin
+        logout: logout
+        // admin: nutmAdmin
         //get diff(){return diff;}
     };
 });

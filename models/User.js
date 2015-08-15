@@ -13,15 +13,15 @@ var UserSchema = new Schema({
     site: {type: String, required: true, index: true, trim: true},
     admin: {type: Boolean, default: false},
     created: {type: Date, default: Date.now},
+    contact: {type: String, trim:true }
 });
-
 UserSchema.virtual('fullname').get(function () {
   return this.name.first + ' ' + this.name.last;
 });
 
 UserSchema.methods.hashPassword = function(password) {
     var result = crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
-    // console.log('Hashing user: %s, password: %s, salt: %s, result: %s, should be: %s', this.username, password, this.salt, result, this.password);   
+    // console.log('Hashing user: %s, password: %s, salt: %s, result: %s, should be: %s', this.username, password, this.salt, result, this.password);
     return result;
 };
 
@@ -35,7 +35,7 @@ UserSchema.pre('save', function(next) {
         // console.log('password pre-hash: %s', this.password);
         this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
         this.password = this.hashPassword(this.password);
-        // console.log('password post-hash: %s', this.password); 
+        // console.log('password post-hash: %s', this.password);
     }
     next();
 });

@@ -1,12 +1,11 @@
 var express = require('express'),
 router = express.Router(),
-passport = require('passport'),
 
 // crud = require('./api/CRUD'),
 // buildingAPI = crud('Building'),
 // wardAPI = crud('Ward'),
 // specialtyAPI = crud('Specialty'),
-auth = require('./auth'),
+// wall = require('./wall'),
 
 taskAPI = require('./api/taskAPI'),
 
@@ -24,11 +23,9 @@ cb = require('./callback');
 //   next();
 // });
 
-router.use('/auth', auth);
+// router.use(wall);
 
-router.use(passport.authenticate('jwt', { session: false}));
-
-router.use('/tasks', taskAPI);
+router.use('/task', taskAPI);
 router.use('/building', buildingAPI);
 router.use('/ward', wardAPI);
 router.use('/specialty', specialtyAPI);
@@ -39,12 +36,9 @@ router.use(function(req, res, next) {
 });
 
 router.use(function(err, req, res, next) {
-    console.log(err.message);
+    console.log(err);
     res.status(err.status || 500);
-    res.json({
-      //success: false,
-      message: err.message
-    });
+    res.send(err.message);
 });
 
 module.exports = router;

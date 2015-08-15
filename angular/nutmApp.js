@@ -1,11 +1,28 @@
-var app = angular.module("nutmApp",["ngResource","ui.router"]);
-app.config(function($stateProvider, $urlRouterProvider) {
-
+var app = angular.module("nutmApp",["ngResource","ui.router","angular-jwt","ui.bootstrap"]);
+app.config(function(
+           $stateProvider,
+           $urlRouterProvider,
+           jwtInterceptorProvider,
+           $httpProvider
+) {
+    jwtInterceptorProvider.tokenGetter = ['Token','config', function(Token,config) {
+        // console.log(config);
+        if (
+            (config.url.substr(config.url.length - 5) === '.html') ||
+            (config.url === '/authenticate')
+            ) {
+            // console.log('Not sending token to %s', config.url);
+            return null;
+        }
+        // console.log('Sending token to %s', config.url);
+        return Token.get();
+    }];
+    $httpProvider.interceptors.push('jwtInterceptor');
+    $urlRouterProvider.otherwise('login');
     $stateProvider
-        .state('auth', {
-            url: '/login',
-            templateUrl: '/templates/auth.html',
-            controller: 'authController'
+        .state('login', {
+            url: '/',
+            templateUrl: '/templates/login.html',
         })
         .state('task', {
             url: '/tasks',
@@ -25,12 +42,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
         .state('user', {
             url: '/user/:userId',
             templateUrl: '/templates/user.html',
-            controller: 'userController',
-            // resolve: {
-            //     postPromise: function(tasks){
-            //         tasks.getAll();
-            //     }
-            // }
+            controller: 'userController'
         })
         .state('location', {
             url: '/location',
@@ -49,5 +61,22 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: '/templates/ward.html',
             controller: 'wardController'
         });
-    $urlRouterProvider.otherwise('login');
+})
+.run(function($rootScope, $state, Token, jwtHelper) {
+    $rootScope.$on('$stateChangeStart', function(e, to) {
+        // console.log('State changed from %s to %s', e.data.requiresLogin, to.data, Token.token);
+        // console.log(to);
+        if (to.name !== 'login') {
+            // console.log('Checking token is valid...');
+            var token = Token.get();
+            if (!token || jwtHelper.isTokenExpired(token)) {
+                e.preventDefault();
+                console.log('You need a valid token for that!');
+                $state.go('login');
+            } else {
+                // console.log('It appears the token was valid!');
+            }
+        }
+        console.log('Going to login page...');
+    });
 });

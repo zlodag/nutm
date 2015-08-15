@@ -1,5 +1,7 @@
-<dl>
-	<dt>Name</dt><dd>{{user.name.first}} {{user.name.last}} <span ng-if="user.admin">(Administrator)</span></dd>
-	<dt>Site</dt><dd>{{user.site}}</dd>
-	<dt>Since</dt><dd>{{user.created | date }}</dd>
+<dl class="dl-horizontal">
+	<dt>Name</dt><dd ng-bind="userDetail.fullname"></dd>
+	<dt>Site</dt><dd ng-bind="userDetail.site"></dd>
+	<dt ng-if="userDetail.admin">Administrator</dt><dd ng-if="userDetail.admin">Yes</dd>
+	<dt ng-if="userDetail.contact">Contact</dt><dd ng-bind="userDetail.contact"></dd>
+	<dt>Member since</dt><dd ng-bind="userDetail.created | date : 'mediumDate'"><dt>ID</dt><dd ng-bind="userDetail.id"></dd>
 </dl>

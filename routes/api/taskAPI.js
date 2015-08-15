@@ -1,5 +1,6 @@
 var express = require('express'),
 router = express.Router(),
+_ = require('lodash'),
 mongoose = require('mongoose'),
 Task = mongoose.model('Task'),
 // Specialty = mongoose.model('Specialty'),
@@ -9,14 +10,17 @@ cb = require('../callback');
 router.get('/', function(req, res, next) {
     Task.find(req.query)
     .lean()
-    .populate('comments.user added.user accepted.user completed.user cancelled.user', 'name username') //user fields
-    .populate('patient.specialty', 'name')
-    .populate('patient.ward','name')
     .sort('added.time')
+    .populate('added.user accepted.user completed.user cancelled.user patient.specialty patient.ward', 'name') //user fields
     //.populate('patient.ward.building','name')
     .exec(function(err, tasks){
         if(err){ return next(err); }
-        res.json(tasks);
+        var toReturn = [];
+        _.forEach(tasks,function(task){
+            task.comments = task.comments.length;
+            toReturn.push(task);
+        });
+        res.json(toReturn);
     });
 });
 router.post('/', function(req, res, next) {
@@ -117,9 +121,8 @@ router.delete('/:taskId', function(req, res, next) {
 });
 router.post('/:taskId', function(req, res, next) {
     req.task.comments.push({
-        //comment: "  Random malformed stuff. . .    ",
-        comment: req.body.comment || "  Random malformed stuff. . .    ",
-        user: req.user._id
+        comment: req.body.comment,
+        user: req.user.sub
     });
     req.task.save(function(err, task){
         if(err){ return next(err); }

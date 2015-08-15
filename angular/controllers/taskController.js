@@ -16,17 +16,13 @@ angular.module("nutmApp")
     //     $scope.newTask.text = '';
     // };
 })
-.controller("taskDetailController",function($scope,$stateParams,tasks,$resource){
-    var api = $resource('/api/tasks/:taskId',$stateParams);
-    $scope.task = api.get();
-    $scope.upvote = function(comment){
-        comment.upvotes++;
-    }
-    $scope.addComment = function(){
-        api.save({comment: $scope.newComment},function(task){
+.controller("taskDetailController",function($scope,$stateParams,tasks,api){
+    $scope.task = api.task.get($stateParams);
+    $scope.addComment = function(comment){
+        api.task.save($stateParams, {comment: comment}, function(task){
             $scope.task = task;
             $scope.newComment = '';
-        })
+        });
         // $scope.task.comments.push({
         //     body: $scope.body,
         //     author: 'Ed',

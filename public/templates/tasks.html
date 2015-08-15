@@ -27,23 +27,18 @@
                 </td>
                 <td ng-bind="task.urgency"></td>
                 <td>
-                    <a ui-sref="taskDetail({taskId:task._id})" ng-bind="task.text"></a>
-                    <ul>
-                        <li ng-repeat="comment in task.comments track by comment._id">
-                            <span ng-bind="comment.comment"></span>
-                            by <a ui-sref="user({userId: comment.user._id})" ng-bind="comment.user.username"></a>
-                            <em>({{comment.user.name.first}} {{comment.user.name.last}})</em>
-                            at <em ng-bind="comment.time | date : 'mediumTime'"></em>
-                        </li>
-                    </ul>
+                    <a ui-sref="taskDetail({taskId:task._id})">
+                        <span ng-bind="task.text"></span>
+                        <span class="badge" ng-if="task.comments" ng-bind="task.comments"></span>
+                    </a>
+
                 </td>
                 <td>
                     <div>
                         Added
-                        by <a ui-sref="user({userId: task.added.user._id})" ng-bind="task.added.user.username"></a>
-                        <em>({{task.added.user.name.first}} {{task.added.user.name.last}})</em>
+                        by <a ui-sref="user({userId: task.added.user._id})">{{task.added.user.name.first}} {{task.added.user.name.last}}</a>
                         at <em ng-bind="task.added.time | date : 'mediumTime'"></em>
-                        <strong ng-if="task.added.comment" ng-bind="task.added.comment"></strong>
+                        <span class="glyphicon glyphicon-comment" ng-if="task.added.comment"></span>
                     </div>
                 </td>
                 <td>
@@ -52,7 +47,7 @@
                         by <a ui-sref="user({userId: task.accepted.user._id})" ng-bind="task.accepted.user.username"></a>
                         <em>({{task.accepted.user.name.first}} {{task.accepted.user.name.last}})</em>
                         at <em ng-bind="task.accepted.time | date : 'mediumTime'"></em>
-                        <strong ng-if="task.accepted.comment" ng-bind="task.accepted.comment"></strong>
+                        <span class="glyphicon glyphicon-comment" ng-if="task.accepted.comment"></span>
                     </div>
                 </td>
                 <td>
@@ -61,7 +56,7 @@
                         by <a ui-sref="user({userId: task.completed.user._id})" ng-bind="task.completed.user.username"></a>
                         <em>({{task.completed.user.name.first}} {{task.completed.user.name.last}})</em>
                         at <em ng-bind="task.completed.time | date : 'mediumTime'"></em>
-                        <strong ng-if="task.completed.comment" ng-bind="task.completed.comment"></strong>
+                        <span class="glyphicon glyphicon-comment" ng-if="task.completed.comment"></span>
                     </div>
                 </td>
                 <td>
@@ -70,7 +65,7 @@
                         by <a ui-sref="user({userId: task.completed.user._id})" ng-bind="task.cancelled.user.username"></a>
                         <em>({{task.cancelled.user.name.first}} {{task.cancelled.user.name.last}})</em>
                         at <em ng-bind="task.cancelled.time | date : 'mediumTime'"></em>
-                        <strong ng-bind="task.cancelled.comment"></strong>
+                        <span class="glyphicon glyphicon-comment"></span>
                     </div>
                 </td>
             </tr>
@@ -80,7 +75,7 @@
 <form ng-submit="tasks.addOne(newTask)">
   <input type="text" ng-model="newTask.nhi" placeholder="NHI" pattern="^[a-zA-Z]{3}[0-9]{4}$" required />
   <input type="text" ng-model="newTask.bed" placeholder="Bed" required />
-  <input type="number" ng-model="newTask.urgency" min="0" max="3" required /> 
+  <input type="number" ng-model="newTask.urgency" min="0" max="3" required />
   <input type="text" ng-model="newTask.text" placeholder="Text" required />
   <button type="submit">Add Task!</button>
   <pre ng-bind="newTask | json"></pre>

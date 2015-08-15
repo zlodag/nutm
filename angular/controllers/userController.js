@@ -1,5 +1,4 @@
 angular.module("nutmApp")
-.controller("userController",function($scope,$resource,$stateParams){
-    var api = $resource('/api/user/:userId',$stateParams);
-    $scope.user = api.get();
+.controller("userController",function($stateParams,$scope,api){
+	$scope.userDetail = api.user.get($stateParams);
 });
