@@ -49,5 +49,5 @@ app.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: '/templates/ward.html',
             controller: 'wardController'
         });
-    $urlRouterProvider.otherwise('tasks');
+    $urlRouterProvider.otherwise('login');
 });

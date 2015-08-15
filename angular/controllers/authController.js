@@ -1,7 +1,7 @@
 angular.module("nutmApp").controller("authController",function($scope,User){
     $scope.showUsers = function(){
-        User.admin.showUsers(function(response){
-            $scope.userList = response.users;
+        User.admin.showUsers(function(users){
+            $scope.userList = users;
         }, function(response){
             $scope.userList = [];
         })

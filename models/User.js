@@ -20,19 +20,22 @@ UserSchema.virtual('fullname').get(function () {
 });
 
 UserSchema.methods.hashPassword = function(password) {
-    return crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
+    var result = crypto.pbkdf2Sync(password, this.salt, 10000, 64).toString('base64');
+    // console.log('Hashing user: %s, password: %s, salt: %s, result: %s, should be: %s', this.username, password, this.salt, result, this.password);   
+    return result;
 };
 
 UserSchema.methods.authenticate = function(password) {
+    //return true;
     return this.password === this.hashPassword(password);
 };
 
 UserSchema.pre('save', function(next) {
     if (this.isModified('password')) {
-        console.log('password pre-hash: %s', this.password);
+        // console.log('password pre-hash: %s', this.password);
         this.salt = new Buffer(crypto.randomBytes(16).toString('base64'), 'base64');
         this.password = this.hashPassword(this.password);
-        console.log('password post-hash: %s', this.password);
+        // console.log('password post-hash: %s', this.password); 
     }
     next();
 });

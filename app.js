@@ -9,7 +9,6 @@ require('./models/Location');
 require('./models/Specialty');
 require('./models/User');
 
-var index = require('./routes/index');
 var api = require('./routes/api');
 
 var mongoose = require('mongoose');
@@ -24,12 +23,17 @@ app.set('view engine', 'ejs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower',express.static(path.join(__dirname, 'bower_components')));
+app.use('/angular',express.static(path.join(__dirname, 'angular')));
 
-app.use('/', index);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.get('/', function(req, res, next) {
+  res.render('index', { title: 'TaskManager', version: "0.0.1" });
+});
 app.use('/api', api);
 
 // catch 404 and forward to error handler

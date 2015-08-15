@@ -19,18 +19,26 @@ angular.module("nutmApp")
     function login(auth){
         nutmAuth.submit(auth, function(response) {
             //$scope.message = response.message;
-            if (response.success === true) {
-                Token.set(response.token);
-            } else {
-                logout();
-            }
+            console.log('That worked!');
+            Token.set(response.token);
+        }, function(response){
+            console.log('Well - that failed...');
+            logout();
         });
     }
-    var nutmAuth = $resource('/authenticate',{},{
+    var nutmAuth = $resource('/api/auth',{},{
         submit: {method: 'POST'}
     }),
-    nutmAdmin = $resource('/users/:userId',{},{
-        showUsers: {method: 'GET', headers:{'X-Access-Token': function(){return Token.token;}}}
+    nutmAdmin = $resource('/api/user/:userId',{},{
+        showUsers: {
+            method: 'GET',
+            headers:{
+                'Authorization': function(){
+                    if (Token.token) return 'JWT ' + Token.token;
+                }
+            },
+            isArray: true
+        }
     });
     // diff;
     // updateTime();

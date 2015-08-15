@@ -1,25 +1,32 @@
 var express = require('express'),
 router = express.Router(),
-taskAPI = require('./api/taskAPI.js'),
+passport = require('passport'),
 
 // crud = require('./api/CRUD'),
 // buildingAPI = crud('Building'),
 // wardAPI = crud('Ward'),
 // specialtyAPI = crud('Specialty'),
+auth = require('./auth'),
 
-buildingAPI = require('./api/buildingAPI.js'),
-wardAPI = require('./api/wardAPI.js'),
-specialtyAPI = require('./api/specialtyAPI.js'),
+taskAPI = require('./api/taskAPI'),
 
-userAPI = require('./api/userAPI.js'),
+buildingAPI = require('./api/buildingAPI'),
+wardAPI = require('./api/wardAPI'),
+specialtyAPI = require('./api/specialtyAPI'),
+
+userAPI = require('./api/userAPI'),
 cb = require('./callback');
 
-router.use(function (req, res, next) {
-  // console.log('Accessed API: ', Date.now());
-  //if(req.body) {console.log('Request body: ', req.body);}
-  req.user = {_id: "55c65b8d89ec4dc92e0619e1"};
-  next();
-});
+// router.use(function (req, res, next) {
+//   console.log('%s accessed API: ', req.user, Date.now());
+//   //if(req.body) {console.log('Request body: ', req.body);}
+//   //req.user = {_id: "55c65b8d89ec4dc92e0619e1"};
+//   next();
+// });
+
+router.use('/auth', auth);
+
+router.use(passport.authenticate('jwt', { session: false}));
 
 router.use('/tasks', taskAPI);
 router.use('/building', buildingAPI);
@@ -35,7 +42,7 @@ router.use(function(err, req, res, next) {
     console.log(err.message);
     res.status(err.status || 500);
     res.json({
-      success: false,
+      //success: false,
       message: err.message
     });
 });
