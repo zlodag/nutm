@@ -18,7 +18,7 @@ router.param('userId', function(req, res, next, userId) {
 });
 router.get('/:userId', function(req, res, next) {
     if (req.person.id !== req.user.sub && req.user.admin !== true) {
-        return res.json(_.pick(req.person,'fullname','site','admin','created','id'));
+        return res.json(_.pick(req.person,'fullname','site','admin','created','_id'));
     }
     res.json(req.person);
 });
@@ -30,37 +30,46 @@ router.put('/:userId', function(req, res, next) {
     if(req.body.password) {req.person.password = req.body.password;}
     if(req.body.contact) {req.person.contact = req.body.contact;}
     if(typeof req.body.admin === 'boolean') {req.person.admin = req.body.admin;}
-    req.person.save(function(err, user){
+    req.person.save(function(err, person){
         if(err){ return next(err); }
-        res.status(204).end();
+        res.json(person);
     });
 });
+// router.post('/:userId',function(req, res, next) {
+//     if (!req.body.password) { return next(cb("No password supplied for authentication",422)); }
+//     res.json({
+//         password: req.body.password,
+//         valid: req.person.authenticate(req.body.password)
+//     });
+// });
+// router.use(function(req, res, next) {
+//     if (req.user.admin !== true) {
+//         return next(cb("This requires admin rights",401));
+//     }
+//     next();
+// });
 router.delete('/:userId', function(req, res, next) {
-    req.person.remove(function(err, user){
-        if(err){ return next(err); }
-        res.status(204).end();
-    });
-});
-router.post('/:userId',function(req, res, next) {
-    if (!req.body.password) { return next(cb("No password supplied for authentication",422)); }
-    res.json({
-        password: req.body.password,
-        valid: req.person.authenticate(req.body.password)
-    });
-});
-router.use(function(req, res, next) {
     if (req.user.admin !== true) {
         return next(cb("This requires admin rights",401));
     }
-    next();
+    req.person.remove(function(err, person){
+        if(err){ return next(err); }
+        res.json(person);
+    });
 });
 router.get('/', function(req, res, next) {
+    if (req.user.admin !== true) {
+        return next(cb("This requires admin rights",401));
+    }
     User.find().lean().sort('name.last').exec(function(err, users){
         if(err){ return next(err); }
         res.json(users);
     });
 });
 router.post('/', function(req, res, next) {
+    if (req.user.admin !== true) {
+        return next(cb("This requires admin rights",401));
+    }
     if (!req.body.username) { return next(cb("No username supplied for user",422)); }
     User.create({
         name:{
@@ -74,6 +83,5 @@ router.post('/', function(req, res, next) {
         res.status(201).json(user);
     });
 });
-
 
 module.exports = router;

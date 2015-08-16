@@ -59,8 +59,9 @@ angular.module("nutmApp")
         $scope.outcome = API.ward.delete({wardId:$stateParams.wardId});
     };
 })
-.controller("taskController",function($scope,Task){
-    $scope.task = Task;
+.controller("taskController",function($scope,API,tasks){
+    $scope.tasks = tasks;
+
     // $scope.addTask = function(){
     //     tasks.new(tasks.);
     // };
@@ -76,18 +77,27 @@ angular.module("nutmApp")
     //     $scope.newTask.text = '';
     // };
 })
-.controller("taskDetailController",function($scope,$stateParams,API){
-    $scope.task = API.task.get($stateParams);
-    $scope.addComment = function(comment){
-        API.task.save($stateParams, {comment: comment}, function(task){
-            $scope.task = task;
-            $scope.newComment = '';
+.controller("newTaskController",function(API,$scope,wards,specialties,$state){
+    $scope.wards = wards;
+    $scope.specialties = specialties;
+    $scope.submit = function(task){
+        if ($scope.form.$invalid){
+            return false;
+        }
+        API.task.save(task, function(){
+            $state.go('task');
         });
-        // $scope.task.comments.push({
-        //     body: $scope.body,
-        //     author: 'Ed',
-        //     upvotes: 0
-        // });
+    };
+})
+.controller("taskDetailController",function($scope,$stateParams,API,task){
+    $scope.task = task;
+    $scope.addComment = function(comment){
+        API.task.save($stateParams, comment, function(){
+            API.task.get($stateParams,function(task){
+                delete $scope.newComment;
+                $scope.task = task;
+            });
+        });
     };
 })
 ;

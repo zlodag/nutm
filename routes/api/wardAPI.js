@@ -6,9 +6,16 @@ Item = mongoose.model(arg),
 cb = require('../callback');
 
 router.get('/', function(req, res, next) {
-    Item.find(req.query).lean().sort('name').exec(function(err, items){
+    Item.find(req.query).lean().sort('name')
+    .populate('building','name')
+    .exec(function(err, items){
         if(err){ return next(err); }
-        res.json(items);
+        var wards = [], ward;
+        for (var i = 0; i < items.length; i++) {
+            ward = items[i];
+            wards.push({_id: ward._id, name: ward.name, building: ward.building.name });
+        }
+        res.json(wards);
     });
 });
 router.post('/', function(req, res, next) {

@@ -1,5 +1,43 @@
-<div class="page.header">
-    <h3 ng-bind="task.text"></h3><h5 ng-bind="task.added.time | date : 'short'"></h5>
+<div class="jumbotron">
+	<dl class="dl-horizontal">
+	    <dt>Patient</dt>
+	    <dd ng-bind="task.patient.name"></dd>
+	    <dt>NHI</dt>
+	    <dd ng-bind="task.patient.nhi"></dd>
+	    <dt>Specialty</dt>
+	    <dd><a ui-sref="specialty({specialtyId: task.patient.specialty._id})" ng-bind="task.patient.specialty.name"></a></dd>
+	    <dt>Ward</dt>
+	    <dd><a ui-sref="ward({wardId: task.patient.ward._id})" ng-bind="task.patient.ward.name"></a></dd>
+	    <dt>Bed</dt>
+	    <dd ng-bind="task.patient.bed"></dd>
+	    <dt>Urgency</dt>
+	    <dd ng-bind="task.urgency"></dd>
+    </dl>
+    <p ng-bind="task.text"></p>
+    <div>
+        Added
+        by <a ui-sref="user({userId: task.added.user._id})">{{task.added.user.name.first}} {{task.added.user.name.last}}</a>
+        at <em ng-bind="task.added.time | date : 'short'"></em>
+    </div>
+    <div ng-if="task.accepted">
+        Accepted
+        by <a ui-sref="user({userId: task.accepted.user._id})" ng-bind="task.accepted.user.username"></a>
+        <em>({{task.accepted.user.name.first}} {{task.accepted.user.name.last}})</em>
+        at <em ng-bind="task.accepted.time | date : 'short'"></em>
+    </div>
+    <div ng-if="task.completed">
+        Completed
+        by <a ui-sref="user({userId: task.completed.user._id})" ng-bind="task.completed.user.username"></a>
+        <em>({{task.completed.user.name.first}} {{task.completed.user.name.last}})</em>
+        at <em ng-bind="task.completed.time | date : 'short'"></em>
+    </div>
+    <div ng-if="task.cancelled">
+        Cancelled
+        by <a ui-sref="user({userId: task.completed.user._id})" ng-bind="task.cancelled.user.username"></a>
+        <em>({{task.cancelled.user.name.first}} {{task.cancelled.user.name.last}})</em>
+        at <em ng-bind="task.cancelled.time | date : 'short'"></em>
+        <span class="glyphicon glyphicon-comment" tooltip="{{task.cancelled.comment}}"></span>
+    </div>
 </div>
 <blockquote ng-repeat="comment in task.comments">
     <p ng-bind="comment.comment"></p>
@@ -9,7 +47,7 @@
 <form ng-submit="addComment(newComment)">
     <h3>Add a new comment</h3>
     <div class="form-group">
-        <input type="text" class="form-control" placeholder="Comment" ng-model="newComment"></input>
+        <input type="text" class="form-control" placeholder="Comment" ng-model="newComment.comment"></input>
     </div>
     <button type="submit" class="btn btn-primary">Post</button>
 </form>

@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="task in task.tasks track by task._id">
+            <tr ng-repeat="task in tasks track by task._id">
                 <td ng-bind="task.patient.nhi"></td>
                 <td>Patient Name</td>
                 <td>
@@ -37,7 +37,6 @@
                         Added
                         by <a ui-sref="user({userId: task.added.user._id})">{{task.added.user.name.first}} {{task.added.user.name.last}}</a>
                         at <em ng-bind="task.added.time | date : 'mediumTime'"></em>
-                        <span class="glyphicon glyphicon-comment" ng-if="task.added.comment"></span>
                     </div>
                 </td>
                 <td>
@@ -46,7 +45,6 @@
                         by <a ui-sref="user({userId: task.accepted.user._id})" ng-bind="task.accepted.user.username"></a>
                         <em>({{task.accepted.user.name.first}} {{task.accepted.user.name.last}})</em>
                         at <em ng-bind="task.accepted.time | date : 'mediumTime'"></em>
-                        <span class="glyphicon glyphicon-comment" ng-if="task.accepted.comment"></span>
                     </div>
                 </td>
                 <td>
@@ -55,7 +53,6 @@
                         by <a ui-sref="user({userId: task.completed.user._id})" ng-bind="task.completed.user.username"></a>
                         <em>({{task.completed.user.name.first}} {{task.completed.user.name.last}})</em>
                         at <em ng-bind="task.completed.time | date : 'mediumTime'"></em>
-                        <span class="glyphicon glyphicon-comment" ng-if="task.completed.comment"></span>
                     </div>
                 </td>
                 <td>
@@ -64,18 +61,10 @@
                         by <a ui-sref="user({userId: task.completed.user._id})" ng-bind="task.cancelled.user.username"></a>
                         <em>({{task.cancelled.user.name.first}} {{task.cancelled.user.name.last}})</em>
                         at <em ng-bind="task.cancelled.time | date : 'mediumTime'"></em>
-                        <span class="glyphicon glyphicon-comment"></span>
+                        <span class="glyphicon glyphicon-comment" tooltip="{{task.cancelled.comment}}"></span>
                     </div>
                 </td>
             </tr>
         </tbody>
     </table>
 </div>
-<form ng-submit="task.addOne(newTask)">
-  <input type="text" ng-model="newTask.nhi" placeholder="NHI" pattern="^[a-zA-Z]{3}[0-9]{4}$" required />
-  <input type="text" ng-model="newTask.bed" placeholder="Bed" required />
-  <input type="number" ng-model="newTask.urgency" min="0" max="3" required />
-  <input type="text" ng-model="newTask.text" placeholder="Text" required />
-  <button type="submit">Add Task!</button>
-  <pre ng-bind="newTask | json"></pre>
-</form>

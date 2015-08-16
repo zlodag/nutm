@@ -25,57 +25,51 @@ router.get('/', function(req, res, next) {
 });
 router.post('/', function(req, res, next) {
     //if (!req.body.name) { return next(cb("No name supplied for task",422)); }
-    var newTask = {
-        // updates: [ {
-        //     type: 'add',
-        //     // user: '55c695663fcc64917de8422c' //wrong
-        //     user: '55c6539acaa15530234f6d48' //right
-        // } ],
-        patient: {
-            nhi: req.body.nhi || 'asd2341',
-            ward: '55c695663fcc64917de8422c', //right
-            // ward: '55c6539acaa15530234f6d48', //wrong
-            bed: req.body.bed || '16A',
-            specialty: '55c64c862fd79dc915a412e7' //right
-            // specialty: '55c6539acaa15530234f6d48' //wrong
-        },
-        text: req.body.text || 'Please come and tie my shoes',
-        urgency: req.body.urgency || 3,
-        // added: {
-        //     comment: 'How about it?',
-        //     user: '55c6539acaa15530234f6d48' //right
-        //     // user: '55c695663fcc64917de8422c' //wrong
-        // }
-    };
+    // var newTask = {
+    //     // updates: [ {
+    //     //     type: 'add',
+    //     //     // user: '55c695663fcc64917de8422c' //wrong
+    //     //     user: '55c6539acaa15530234f6d48' //right
+    //     // } ],
+    //     patient: {
+    //         nhi: req.body.nhi || 'asd2341',
+    //         ward: '55c695663fcc64917de8422c', //right
+    //         // ward: '55c6539acaa15530234f6d48', //wrong
+    //         bed: req.body.bed || '16A',
+    //         specialty: '55c64c862fd79dc915a412e7' //right
+    //         // specialty: '55c6539acaa15530234f6d48' //wrong
+    //     },
+    //     text: req.body.text || 'Please come and tie my shoes',
+    //     urgency: req.body.urgency || 3,
+    //     // added: {
+    //     //     comment: 'How about it?',
+    //     //     user: '55c6539acaa15530234f6d48' //right
+    //     //     // user: '55c695663fcc64917de8422c' //wrong
+    //     // }
+    // };
+    var newTask = req.body;
     mongoose.model('Ward').findById(newTask.patient.ward, function(err, ward){
         if (err) { return next(err); }
-        console.log('The supplied ward ID was: %s',newTask.patient.ward);
-        console.log('The found ward was: %s',ward);
+        // console.log('The supplied ward ID was: %s',newTask.patient.ward);
+        // console.log('The found ward was: %s',ward);
         if (!ward) { return next(cb("Ward not found",404));}
         mongoose.model('Specialty').findById(newTask.patient.specialty, function(err, specialty){
             if (err) { return next(err); }
-            console.log('The supplied specialty ID was: %s',newTask.patient.specialty);
-            console.log('The found specialty was: %s',specialty);
+            // console.log('The supplied specialty ID was: %s',newTask.patient.specialty);
+            // console.log('The found specialty was: %s',specialty);
             if (!specialty) { return next(cb("Specialty not found",404));}
             var task = new Task(newTask);
-            task.updateStatus('added',req.user._id,'Just adding a job for you',function(err, newTask){
-                if(err){
-                    //console.log(err);
-                    return next(err);
-                }
-                // console.log(newTask.populate);
-                newTask
-                // .lean()
-                // .populate('comments.user added.user accepted.user completed.user cancelled.user', 'name username') //user fields
-                // .populate('patient.specialty', 'name')
-                .populate({path:'patient.specialty',select:'name'})
-                .populate({path:'patient.ward',select:'name building'})
-                .execPopulate()
-                // .lean()
-                .then(function(task){
-                    if(err){ return next(err); }
-                    res.status(201).json(task);
-                });
+            task.updateStatus('added',req.user.sub,null,function(err, newTask){
+                if(err){ return next(err); }
+                return res.status(201).end();
+                // newTask
+                // .populate({path:'patient.specialty',select:'name'})
+                // .populate({path:'patient.ward',select:'name building'})
+                // .execPopulate()
+                // .then(function(task){
+                //     if(err){ return next(err); }
+                //     res.status(201).json(task);
+                // });
             });
         });
     });
@@ -91,7 +85,7 @@ router.param('taskId', function(req, res, next, taskId) {
 });
 router.get('/:taskId', function(req, res, next) {
     req.task
-    .populate('comments.user added.user accepted.user completed.user cancelled.user', 'name') //user fields
+    .populate('comments.user added.user accepted.user completed.user cancelled.user patient.ward patient.specialty', 'name') //user fields
     .execPopulate()
     .then(function(task){
         res.json(task);
@@ -126,7 +120,8 @@ router.post('/:taskId', function(req, res, next) {
     });
     req.task.save(function(err, task){
         if(err){ return next(err); }
-        res.status(201).json(task);
+        res.status(201).end();
+        // res.status(201).json(task);
     });
 });
 

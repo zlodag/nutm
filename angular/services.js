@@ -1,25 +1,13 @@
 angular.module("nutmApp")
 .factory("API", function($resource){
     return {
-        user: $resource('/api/user/:userId',{userId: '@_id'},{
+        user: $resource('/api/user/:userId',{},{
         	update: {method:'PUT'}
         }),
         task: $resource('/api/task/:taskId'),
 		building: $resource('/api/building/:buildingId'),
-		ward: $resource('/api/ward/:wardId')
-    };
-})
-.factory("Task", function(API){
-    var tasks = [];
-    return {
-        // tasks: [{text: "clean the bleeding rubbish", time: Date.now()}, {text: "put out the laundry", time: Date.now()}]
-        get tasks(){return tasks;},
-        getAll : function(){
-            tasks = API.task.query();
-        },
-        addOne : function(task){
-            tasks.push(API.task.save(task));
-        }
+		ward: $resource('/api/ward/:wardId'),
+        specialty: $resource('/api/specialty/:specialtyId')
     };
 })
 .factory("Token", function($window,jwtHelper){

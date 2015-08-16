@@ -60,9 +60,16 @@ app.config(function(
             templateUrl: '/templates/tasks.html',
             controller: 'taskController',
             resolve: {
-                postPromise: function(Task){
-                    Task.getAll();
-                }
+                tasks : function(API){ return API.task.query(); }
+            }
+        })
+        .state('newTask', {
+            url: '/newTask',
+            templateUrl: '/templates/newTask.html',
+            controller: 'newTaskController',
+            resolve: {
+                wards : function(API){ return API.ward.query(); },
+                specialties : function(API){ return API.specialty.query(); }
             }
         })
         .state('admin', {
@@ -73,7 +80,10 @@ app.config(function(
         .state('taskDetail', {
             url: '/tasks/:taskId',
             templateUrl: '/templates/taskDetail.html',
-            controller: 'taskDetailController'
+            controller: 'taskDetailController',
+            resolve: {
+                task : function(API,$stateParams){ return API.task.get($stateParams); }
+            }
         })
         .state('user', {
             url: '/user/:userId',

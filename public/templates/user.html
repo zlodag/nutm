@@ -8,7 +8,7 @@
 	<dt>Administrator</dt><dd ng-bind="userDetail.admin === true ? 'Yes' : 'No'"></dd>
 	<dt ng-if="userDetail.contact">Contact</dt><dd ng-bind="userDetail.contact"></dd>
 	<dt>Member since</dt><dd ng-bind="userDetail.created | date : 'mediumDate'">
-	<dt>ID</dt><dd ng-bind="userDetail.id"></dd>
+	<dt>ID</dt><dd ng-bind="userDetail._id"></dd>
 </dl>
 <form ng-if="canModify()" ng-submit="update()">
 	<div class="form-group">
