@@ -1,10 +1,10 @@
 <div class="page.header">
-    <h3 ng-bind="task.text"></h3><h5 ng-bind="task.added.time | date : 'mediumTime'"></h5>
+    <h3 ng-bind="task.text"></h3><h5 ng-bind="task.added.time | date : 'short'"></h5>
 </div>
 <blockquote ng-repeat="comment in task.comments">
     <p ng-bind="comment.comment"></p>
-    <footer>by <a ui-sref="user({userId: comment.user._id})" ng-bind="{{comment.user.name.first}} {{comment.user.name.last}}"></a>
-                            at <em ng-bind="comment.time | date : 'mediumTime'"></em></footer>
+    <footer>by <a ui-sref="user({userId: comment.user._id})" ng-bind="comment.user.fullname"></a>
+                            at <em ng-bind="comment.time | date : 'short'"></em></footer>
 </blockquote>
 <form ng-submit="addComment(newComment)">
     <h3>Add a new comment</h3>

@@ -13,8 +13,8 @@ var UserSchema = new Schema({
     site: {type: String, required: true, index: true, trim: true},
     admin: {type: Boolean, default: false},
     created: {type: Date, default: Date.now},
-    contact: {type: String, trim:true }
-});
+    contact: {type: String, trim:true, match: /^[0-9]+$/ }
+},{toJSON: {virtuals: true}});
 UserSchema.virtual('fullname').get(function () {
   return this.name.first + ' ' + this.name.last;
 });

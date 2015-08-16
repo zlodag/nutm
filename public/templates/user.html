@@ -1,7 +1,35 @@
 <dl class="dl-horizontal">
-	<dt>Name</dt><dd ng-bind="userDetail.fullname"></dd>
+	<dt>Name</dt>
+	<dd ng-if="!canModify()" ng-bind="userDetail.fullname"></dd>
+	<dd ng-if="canModify()" ng-bind="userDetail.name.first + ' ' + userDetail.name.last"></dd>
+	<dt ng-if="canModify()">Username</dt>
+	<dd ng-if="canModify()" ng-bind="userDetail.username"></dd>
 	<dt>Site</dt><dd ng-bind="userDetail.site"></dd>
-	<dt ng-if="userDetail.admin">Administrator</dt><dd ng-if="userDetail.admin">Yes</dd>
+	<dt>Administrator</dt><dd ng-bind="userDetail.admin === true ? 'Yes' : 'No'"></dd>
 	<dt ng-if="userDetail.contact">Contact</dt><dd ng-bind="userDetail.contact"></dd>
-	<dt>Member since</dt><dd ng-bind="userDetail.created | date : 'mediumDate'"><dt>ID</dt><dd ng-bind="userDetail.id"></dd>
+	<dt>Member since</dt><dd ng-bind="userDetail.created | date : 'mediumDate'">
+	<dt>ID</dt><dd ng-bind="userDetail.id"></dd>
 </dl>
+<form ng-if="canModify()" ng-submit="update()">
+	<div class="form-group">
+		<label for="firstname">First name</label>
+		<input id="firstname" class="form-control" type="text" ng-model="newUser.name.first" required/>
+	</div>
+	<div class="form-group">
+		<label for="lastname">Last name</label>
+		<input id="lastname" class="form-control" type="text" ng-model="newUser.name.last" required/>
+	</div>
+	<div class="form-group">
+		<label for="username">Username</label>
+		<input id="username" class="form-control" type="text" ng-model="newUser.username" ng-minlength="6" required/>
+	</div>
+	<div class="form-group">
+		<label for="contact">Contact</label>
+		<input id="contact" class="form-control" type="text" ng-model="newUser.contact" ng-pattern="/^[0-9]+$/"/>
+	</div>
+	<div ng-if="admin()" class="form-group">
+		<label for="contact">Admin</label>
+		<input id="contact" type="checkbox" ng-model="newUser.admin"/>
+	</div>
+	<button type="submit" class="btn btn-primary">Update</button>
+</form>

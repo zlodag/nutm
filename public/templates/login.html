@@ -13,10 +13,4 @@
         <button class="btn btn-default" type="button" ng-click="user.login({username:'tickled_goat',password:'anonymous'})">Log in as user</button>
     </form>
 </div>
-<div ng-if="user.loggedIn">
-    <h1>Welcome, {{user.token.name}}</h1>
-    <div ng-if="user.token.admin">
-        <button class="btn btn-default navbar-btn" ng-click="showUsers()">Show Users</button>
-        <pre ng-if="userList" ng-bind="userList | json"></pre>
-    </div>
-</div>
+<h1 ng-if="user.loggedIn">Welcome, {{user.info.name}}</h1>

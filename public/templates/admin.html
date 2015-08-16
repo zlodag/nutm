@@ -1,0 +1,7 @@
+
+<!-- <pre ng-if="userList" ng-bind="userList | json"></pre> -->
+<ul>
+    <li ng-repeat="user in userList">
+        <a ng-bind="user.username" ui-sref="user({userId:user._id})"></a>
+    </li>
+</ul>

@@ -8,20 +8,21 @@
     <script src="/bower/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="/bower/angular-jwt/dist/angular-jwt.js"></script>
     <script src="/angular/nutmApp.js"></script>
-    <script src="/angular/controllers/authController.js"></script>
-    <script src="/angular/controllers/userController.js"></script>
-    <script src="/angular/controllers/taskController.js"></script>
-    <script src="/angular/controllers/locationControllers.js"></script>
-    <script src="/angular/services/apiFactory.js"></script>
-    <script src="/angular/services/tokenFactory.js"></script>
-    <script src="/angular/services/userFactory.js"></script>
-    <script src="/angular/services/taskFactory.js"></script>
+    <script src="/angular/controllers.js"></script>
+    <script src="/angular/services.js"></script>
     <link rel='stylesheet' href='/bower/bootstrap/dist/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
-  <body ng-app="nutmApp" ng-controller="authController">
+  <body ng-app="nutmApp">
     <ng-include src="'/templates/navbar.html'"></ng-include>
     <div class="container">
+        <div ng-controller="alertController">
+            <div ng-repeat="alert in alerts" class="alert alert-dismissible" ng-class="'alert-' + alert.type">
+                <button type="button" class="close" ng-click="closeAlert($index)">&times;</button>
+                {{ alert.msg }}
+            </div>
+        </div>
+        <p ng-if="errorMsg" ng-bind="errorMsg"></p>
         <ui-view></ui-view>
     </div>
   </body>

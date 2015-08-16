@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default navbar-fixed-top" ng-controller="navbarController">
     <div class="container">
         <ul class="nav navbar-nav">
             <li><a ui-sref="login" class="navbar-brand">Task Manager</a></li>
@@ -9,29 +9,45 @@
                 <li><a ui-sref="location">Location</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li><a ui-sref="user({userId:user.info.sub})">
+                    <span class="glyphicon glyphicon-user"></span>
+                    <span ng-bind="user.info.name"></span>
+                </a></li>
+                <li ng-if="user.info.admin"><a ui-sref="admin">
+                    <span class="glyphicon glyphicon-wrench"></span>
+                    Administrate!
+                </a></li>
+                <li><a href class="navbar-link" ng-click="user.logout()">
+                    <span class="glyphicon glyphicon-log-out"></span>
+                    Log out
+                </a></li>
+            </ul>
+
+<!--             <ul class="nav navbar-nav navbar-right">
                 <li dropdown keyboard-nav>
                     <a href dropdown-toggle>
                         <span class="glyphicon glyphicon-user"></span>
-                        <span ng-bind="user.token.name"></span>
+                        <span ng-bind="user.info.name"></span>
                         <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a ui-sref="user({userId:user.token.sub})">
+                        <li><a ui-sref="user({userId:user.info.sub})">
                             <span class="glyphicon glyphicon-cog"></span>
                             User Profile
                         </a></li>
-                        <li ng-if="user.token.admin"><a href>
+                        <li ng-if="user.info.admin"><a ui-sref="admin">
                             <span class="glyphicon glyphicon-wrench"></span>
                             Administrate!
                         </a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href class="navbar-link" ng-click="logout()">
+                        <li><a href class="navbar-link" ng-click="user.logout()">
                             <span class="glyphicon glyphicon-log-out"></span>
                             Log out
                         </a></li>
                     </ul>
                 </li>
             </ul>
+ -->
         </div>
     </div>
 </nav>

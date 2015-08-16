@@ -14,6 +14,7 @@ angular.module("nutmApp")
     //     }
     // }
     function logout() {
+        console.log('Logging out...');
         Token.del();
     }
     function login(auth){
@@ -22,6 +23,7 @@ angular.module("nutmApp")
             //$scope.message = response.message;
             console.log('That worked!');
             Token.set(response.data);
+            //$state.go('task');
         }, function(response){
             console.log('Well - that failed...');
             logout();

@@ -38,7 +38,7 @@ authenticate = function(req, res, next) {
         // console.log(user);
         console.log('Logged in as %s', user.fullname);
         var token = createToken(user);
-        return res.status(201).send(token);
+        return res.status(201).json(token);
     });
 };
 
