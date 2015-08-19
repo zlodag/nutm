@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html ng-app="handover">
+  <head>
+    <title>Firebase</title>
+    <script src="/bower/angular/angular.js"></script>
+    <script src="/bower/firebase/firebase.js"></script>
+    <script src="/bower/angularfire/dist/angularfire.js"></script>
+    <script src="/firebase.js"></script>
+    <link rel='stylesheet' href='/bower/bootstrap/dist/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/firebase.css' />
+  </head>
+  <body>
+    <div class="container" ng-controller="TaskCtrl">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>NHI</th>
+                        <th>Patient</th>
+                        <th>Ward</th>
+                        <th>Bed</th>
+                        <th>Specialty</th>
+                        <th>Urgency</th>
+                        <th>Text</th>
+                        <th>Added</th>
+                        <th>Accepted</th>
+                        <th>Completed</th>
+                        <th>Cancelled</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="task in tasks track by task.$id">
+                        <td ng-bind="task.patient.nhi"></td>
+                        <td ng-bind="task.patient.name"></td>
+                        <td ng-bind="task.patient.ward"></td>
+                        <td ng-bind="task.patient.bed"></td>
+                        <td ng-bind="task.patient.specialty"></td>
+                        <td ng-bind="task.urgency"></td>
+                        <td ng-bind="task.text"></td>
+                        <td>
+                            <span>
+                            Added
+                            by {{task.added.user}}
+                            at {{task.added.timestamp | date : 'mediumTime'}}
+                            </span>
+                        </td>
+                        <td>
+                            <span ng-if="task.accepted">
+                            Accepted
+                            by {{task.accepted.user}}
+                            at {{task.accepted.timestamp | date : 'mediumTime'}}
+                            </span>
+                            <form ng-if="!task.accepted && !task.completed && !task.cancelled" ng-submit="updateTask(task.$id,'accepted')">
+                                <input type="submit" value="Accept" />
+                            </form>
+                        </td>
+                        <td>
+                            <span ng-if="task.completed">
+                            Completed
+                            by {{task.completed.user}}
+                            at {{task.completed.timestamp | date : 'mediumTime'}}
+                            </span>
+                            <form ng-if="!task.completed && !task.cancelled" ng-submit="updateTask(task.$id,'completed')">
+                                <input type="submit" value="Complete" />
+                            </form>
+                        </td>
+                        <td>
+                            <span ng-if="task.cancelled">
+                            Cancelled ({{task.cancelled.reason}})
+                            by {{task.cancelled.user}}
+                            at {{task.cancelled.timestamp | date : 'mediumTime'}}
+                            </span>
+                            <form ng-if="!task.completed && !task.cancelled" ng-submit="updateTask(task.$id,'cancelled',reason)">
+                                <input type="text" ng-model="reason" placeholder="Reason" required />
+                                <input type="submit" value="Cancel" />
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p ng-if="!authData">
+            Log in with:
+            <button ng-click="authMe('facebook')">Facebook</button>
+            <button ng-click="authMe('google')">Google</button>
+        </p>
+        <p ng-if="authData">
+            Logged in as {{authData.facebook.displayName}}
+            <button ng-click="unauthMe()">Log out</button>
+        </p>
+
+        <!-- push a new task onto the array -->
+        <form ng-submit="addTask(newTask)" name="form" novalidate>
+            <div class="form-group" ng-class="{'has-error':form.patient.$dirty && form.patient.$invalid}">
+                <label for="patient">Name</label>
+                <input id="patient" name="patient" class="form-control" type="text" ng-model="newTask.patient.name" required/>
+            </div>
+            <div class="form-group" ng-class="{'has-error':form.nhi.$dirty && form.nhi.$invalid}">
+                <label for="nhi">NHI</label>
+                <input id="nhi" name="nhi" class="form-control" type="text" ng-model="newTask.patient.nhi" required ng-pattern="/^[A-Z]{3}[0-9]{4}$/" />
+            </div>
+            <div class="form-group" ng-class="{'has-error':form.ward.$dirty && form.ward.$invalid}">
+                <label for="ward">Ward</label>
+                <select id="ward" name="ward" class="form-control" ng-model="newTask.patient.ward" required ng-options="key as key for (key,value) in wards">
+                    <option value="">Select a ward</option>
+                </select>
+            </div>
+            <div class="form-group" ng-class="{'has-error':form.bed.$dirty && form.bed.$invalid}">
+                <label for="bed">Bed</label>
+                <input id="bed" name="bed" class="form-control" type="text" ng-model="newTask.patient.bed" required ng-maxlength="3" />
+            </div>
+            <div class="form-group" ng-class="{'has-error':form.specialty.$dirty && form.specialty.$invalid}">
+                <label for="specialty">Specialty</label>
+                <select id="specialty" name="specialty" class="form-control" ng-model="newTask.patient.specialty" required ng-options="key as key for (key,value) in specialties">
+                    <option value="">Select a specialty</option>
+                </select>
+            </div>
+            <div class="form-group" ng-class="{'has-error':form.text.$dirty && form.text.$invalid}">
+                <label for="text">Text</label>
+                <input id="text" name="text" class="form-control" type="text" ng-model="newTask.text" required/>
+            </div>
+            <div class="form-group" ng-class="{'has-error':form.urgency.$dirty && form.urgency.$invalid}">
+                <label for="urgency">Urgency</label>
+                <input id="urgency" name="urgency" class="form-control" type="number" ng-model="newTask.urgency" required min="1" max="3" ng-pattern="/^[0-9]+$/" />
+            </div>
+            <button ng-disabled="form.$invalid" type="submit" class="btn btn-primary">Add Task</button>
+        </form>Wards:
+        <ul>
+            <li ng-repeat="(ward,building) in wards"><span ng-bind="ward"></span> - {{building}} building</li>
+        </ul>Specialties:
+        <ul>
+            <li ng-repeat="(specialty,bool) in specialties" ng-bind="specialty"></li>
+        </ul>
+        <pre ng-bind="tasks | json"></pre>
+    </div>
+  </body>
+</html>

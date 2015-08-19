@@ -17,6 +17,16 @@ api = require('./routes/api');
 
 mongoose.connect('mongodb://localhost/taskmanager');
 var app = express();
+// firebase
+app.get('/firebase', function(req, res, next) {
+  res.sendFile(path.join(__dirname, 'firebase.html'));
+});
+app.get('/firebase.js', function(req, res, next) {
+  res.sendFile(path.join(__dirname, 'firebase.js'));
+});
+app.get('/firebase.css', function(req, res, next) {
+  res.sendFile(path.join(__dirname, 'firebase.css'));
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

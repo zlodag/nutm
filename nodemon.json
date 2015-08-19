@@ -1,5 +1,6 @@
 {
   "ignore": [
+    "firebase.html",
     "public",
     "views",
     "bower_components",
